@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.10.12224.181 stable
+VisualStudioVersion = 18.10.12224.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalGenerator.App", "SignalGenerator.App\SignalGenerator.App.csproj", "{1CFF5385-421A-4ADF-B9CB-D2352F39C0E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalProcessing.Core", "..\signals-core\SignalProcessing.Core\SignalProcessing.Core.csproj", "{8F31D76C-B5AD-4ECF-8525-E1530A3F46CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1CFF5385-421A-4ADF-B9CB-D2352F39C0E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CFF5385-421A-4ADF-B9CB-D2352F39C0E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CFF5385-421A-4ADF-B9CB-D2352F39C0E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F31D76C-B5AD-4ECF-8525-E1530A3F46CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F31D76C-B5AD-4ECF-8525-E1530A3F46CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F31D76C-B5AD-4ECF-8525-E1530A3F46CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F31D76C-B5AD-4ECF-8525-E1530A3F46CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
