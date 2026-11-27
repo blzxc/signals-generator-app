@@ -10,6 +10,9 @@ namespace SignalGenerator.App
     {
         Sine,
         Line,
-        Noise
+        Noise,
+        Saw,
+        Triangle,
+        Meander
     }
 }

@@ -72,6 +72,9 @@ namespace SignalGenerator.App
             SinePanel.Visibility = Visibility.Collapsed;
             LinePanel.Visibility = Visibility.Collapsed;
             NoisePanel.Visibility = Visibility.Collapsed;
+            SawPanel.Visibility = Visibility.Collapsed;
+            TrianglePanel.Visibility = Visibility.Collapsed;
+            MeanderPanel.Visibility = Visibility.Collapsed;
             switch (type)
             {
                 case SignalType.Sine:
@@ -82,6 +85,15 @@ namespace SignalGenerator.App
                     break;
                 case SignalType.Noise:
                     NoisePanel.Visibility = Visibility.Visible;
+                    break;
+                case SignalType.Saw:
+                    SawPanel.Visibility = Visibility.Visible;
+                    break;
+                case SignalType.Triangle:
+                    TrianglePanel.Visibility = Visibility.Visible;
+                    break;
+                case SignalType.Meander:
+                    MeanderPanel.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -119,6 +131,44 @@ namespace SignalGenerator.App
                         return null;
                     }
                     return new NoiseParameters { Range = range };
+                case SignalType.Saw:
+                    float saw_period;
+                    float saw_phase;
+                    float saw_amplitude;
+                    if (!float.TryParse(saw_period_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out saw_period)
+                        || !float.TryParse(saw_phase_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out saw_phase)
+                        || !float.TryParse(saw_amplitude_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out saw_amplitude))
+                    {
+                        MessageBox.Show("Некорректные параметры пилообразного сигнала");
+                        return null;
+                    }
+                    return new SawParameters { Period = saw_period, Phase = saw_phase, Amplitude = saw_amplitude };
+                case SignalType.Triangle:
+                    float triangle_period;
+                    float triangle_phase;
+                    float triangle_amplitude;
+                    if (!float.TryParse(triangle_period_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out triangle_period)
+                        || !float.TryParse(triangle_phase_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out triangle_phase)
+                        || !float.TryParse(triangle_amplitude_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out triangle_amplitude))
+                    {
+                        MessageBox.Show("Некорректные параметры треугольного сигнала");
+                        return null;
+                    }
+                    return new TriangleParameters { Period = triangle_period, Phase = triangle_phase, Amplitude = triangle_amplitude };
+                case SignalType.Meander:
+                    float meander_period;
+                    float meander_phase;
+                    float meander_amplitude;
+                    float meander_duty;
+                    if (!float.TryParse(meander_period_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out meander_period)
+                        || !float.TryParse(meander_phase_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out meander_phase)
+                        || !float.TryParse(meander_amplitude_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out meander_amplitude)
+                        || !float.TryParse(meander_duty_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out meander_duty))
+                    {
+                        MessageBox.Show("Некорректные параметры меандра");
+                        return null;
+                    }
+                    return new MeanderParameters { Period = meander_period, Phase = meander_phase, Amplitude = meander_amplitude, DutyCycle = meander_duty };
                 default:
                     return null;
             }
