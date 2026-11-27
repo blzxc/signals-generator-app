@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SignalGenerator.App"
         mc:Ignorable="d"
-        Title="MainWindow" Height="760" Width="800">
+        Title="MainWindow" Height="810" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -155,6 +155,13 @@ VerticalAlignment="Top"
             Click="Button_Click_Online"/>
 
 
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Height="50" Orientation="Horizontal">
+                <Label Content="Тип фильтра" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,0,0,0" />
+                <ComboBox x:Name="filterType_comboBox" VerticalAlignment="Top" Margin="10,10,0,0" Width="100" SelectedIndex="0">
+                    <ComboBoxItem Content="Среднее"/>
+                    <ComboBoxItem Content="Медиана"/>
+                </ComboBox>
             </StackPanel>
 
             <StackPanel DockPanel.Dock="Bottom" Height="50" Orientation="Horizontal">

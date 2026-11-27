@@ -232,9 +232,18 @@ namespace SignalGenerator.App
             {
                 intWindowSize++;
             }
+            bool is_median = filterType_comboBox.SelectedIndex == 1;
             try
             {
-                float[] result = OfflineFilter.Filter(signalList.Last().Data, intWindowSize);
+                float[] result;
+                if (is_median)
+                {
+                    result = OfflineMedianFilter.Filter(signalList.Last().Data, intWindowSize);
+                }
+                else
+                {
+                    result = OfflineFilter.Filter(signalList.Last().Data, intWindowSize);
+                }
                 SingleChannelSignal newData = new SingleChannelSignal(result, signalList.Last().Frequency);
                 addSignal(newData);
             }
@@ -253,18 +262,39 @@ namespace SignalGenerator.App
             }
             float window_size = (float.Parse(Window_textBox.Text, CultureInfo.InvariantCulture));
             int intWindowSize = (int)(window_size * signalList.Last().Frequency+ 0.5);
+            bool is_median = filterType_comboBox.SelectedIndex == 1;
+            if (is_median && intWindowSize % 2 == 0)
+            {
+                intWindowSize++;
+            }
             float[] data = signalList.Last().Data;
             int chunkSize = 7;
             try
             {
-                OnlineFilter filter = new OnlineFilter(intWindowSize);
+                OnlineFilter filter = null;
+                OnlineMedianFilter median_filter = null;
+                if (is_median)
+                {
+                    median_filter = new OnlineMedianFilter(intWindowSize);
+                }
+                else
+                {
+                    filter = new OnlineFilter(intWindowSize);
+                }
                 List<float> result = new List<float>();
 
                 // Подаём сигнал на фильтр фрагментами фиксированного размера
                 for (int i = 0; i < data.Length; i += chunkSize)
                 {
                     float[] chunk = data.Skip(i).Take(chunkSize).ToArray();
-                    result.AddRange(filter.Filter(chunk));
+                    if (is_median)
+                    {
+                        result.AddRange(median_filter.Filter(chunk));
+                    }
+                    else
+                    {
+                        result.AddRange(filter.Filter(chunk));
+                    }
                 }
 
                 SingleChannelSignal newData = new SingleChannelSignal(result.ToArray(), signalList.Last().Frequency);
