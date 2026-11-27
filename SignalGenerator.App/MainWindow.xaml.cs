@@ -63,7 +63,8 @@ namespace SignalGenerator.App
             {
                 direction = "вниз";
             }
-            MarkerListBox.Items.Add(e.Time.ToString("F3") + " с; " + e.Value + "; " + direction);
+            CultureInfo ru = CultureInfo.GetCultureInfo("ru-RU");
+            MarkerListBox.Items.Add(e.Time.ToString("F3", ru) + " с; " + e.Value.ToString(ru) + "; " + direction);
         }
         private void ClearAnalysis()
         {
@@ -107,7 +108,7 @@ namespace SignalGenerator.App
                 }
                 else
                 {
-                    PeriodTextBlock.Text = "Период: " + _periodEstimator.Period.ToString("F3") + " с";
+                    PeriodTextBlock.Text = "Период: " + _periodEstimator.Period.ToString("F3", CultureInfo.GetCultureInfo("ru-RU")) + " с";
                 }
             }
             catch (ArgumentException ex)
