@@ -147,31 +147,27 @@ namespace SignalGenerator.App
         }
         private void Button_Click_Summ(object sender, RoutedEventArgs e)
         {
-            SingleChannelSignal sig_summ = Tools.Summ(signalList);
-            string text = "Нет сигналов или частоты не совпадают";
-            if(sig_summ == null)
+            try
             {
-                MessageBox.Show(text);
-            }
-            else
-            {
+                SingleChannelSignal sig_summ = SignalOperations.Sum(signalList);
                 addSignal(sig_summ);
             }
-                
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         private void Button_Click_Concat(object sender, RoutedEventArgs e)
         {
-            SingleChannelSignal sig_con = Tools.Concat(signalList);
-            string text = "Нет сигналов или частоты не совпадают";
-            if (sig_con == null)
+            try
             {
-                MessageBox.Show(text);
-            }
-            else
-            {
+                SingleChannelSignal sig_con = SignalOperations.Concat(signalList);
                 addSignal(sig_con);
             }
-
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Button_Click_Offline(object sender, RoutedEventArgs e)
