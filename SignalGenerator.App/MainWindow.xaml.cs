@@ -199,6 +199,10 @@ namespace SignalGenerator.App
             {
                 MessageBox.Show(ex.Message);
             }
+            catch (OutOfMemoryException)
+            {
+                MessageBox.Show("Не хватает памяти: уменьшите длительность или частоту");
+            }
         }
         private void Button_Clear(object sender, RoutedEventArgs e)
         {
