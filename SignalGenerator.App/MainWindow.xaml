@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SignalGenerator.App"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="800">
+        Title="MainWindow" Height="760" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -110,6 +110,18 @@ VerticalAlignment="Top"
                     Click="Button_Click_Concat"/>
 
 
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Height="50" Orientation="Horizontal">
+                <Button
+        Content="Изменить частоту"
+        HorizontalAlignment="Left"
+        Width="110"
+        Margin="10,10,0,0"
+        VerticalAlignment="Top"
+                    Click="Button_Click_Resample"/>
+                <Label Content="Новая частота(Гц)" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,0,0,0" />
+                <TextBox x:Name="newFreq_textBox" TextWrapping="Wrap" VerticalAlignment="Top" Text="20" Margin="10,10,0,0"
+                    Height="20" Width="50"/>
             </StackPanel>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="50">
                 <Button

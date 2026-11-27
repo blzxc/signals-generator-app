@@ -197,6 +197,27 @@ namespace SignalGenerator.App
                 MessageBox.Show(ex.Message);
             }
         }
+        private void Button_Click_Resample(object sender, RoutedEventArgs e)
+        {
+            if (signalList.Count == 0)
+            {
+                MessageBox.Show("Нет сигналов");
+                return;
+            }
+            float new_freq = (float.Parse(newFreq_textBox.Text, CultureInfo.InvariantCulture));
+            try
+            {
+                SingleChannelSignal sig_res = Resampler.Resample(signalList.Last(), new_freq);
+                clearMarkers();
+                WpfPlot1.Plot.Remove(WpfPlot1.Plot.PlottableList.Last());
+                signalList.Remove(signalList.Last());
+                addSignal(sig_res);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         private void Button_Click_Offline(object sender, RoutedEventArgs e)
         {
