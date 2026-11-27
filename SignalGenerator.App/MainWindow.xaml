@@ -12,11 +12,40 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="330"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
         <ScottPlot:WpfPlot x:Name="WpfPlot1" />
-        <DockPanel Grid.Column="1" LastChildFill="False">
+        <StackPanel Grid.Row="1" Grid.Column="0">
+            <StackPanel Height="40" Orientation="Horizontal">
+                <Label Content="Порог" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,0,0,0" />
+                <TextBox x:Name="ThresholdTextBox" TextWrapping="Wrap" VerticalAlignment="Top" Text="0" Margin="10,10,0,0"
+                    Height="20" Width="50"/>
+                <Button
+                    Content="Найти пересечения"
+                    HorizontalAlignment="Left"
+                    Width="120"
+                    Margin="10,10,0,0"
+                    VerticalAlignment="Top"
+                    Click="Button_Click_FindCrossings"/>
+                <Button
+                    Content="Очистить маркеры"
+                    HorizontalAlignment="Left"
+                    Width="120"
+                    Margin="10,10,0,0"
+                    VerticalAlignment="Top"
+                    Click="Button_Click_ClearMarkers"/>
+            </StackPanel>
+            <TextBlock x:Name="SummaryTextBlock" Margin="10,0,0,0"/>
+            <TextBlock x:Name="CounterTextBlock" Margin="10,0,0,0"/>
+            <TextBlock x:Name="PeriodTextBlock" Margin="10,0,0,0"/>
+            <ListBox x:Name="MarkerListBox" Height="150" Margin="10,5,10,10"/>
+        </StackPanel>
+        <DockPanel Grid.Column="1" Grid.RowSpan="2" LastChildFill="False">
             <StackPanel DockPanel.Dock="Top" Height="50" Orientation="Horizontal">
-                <Label Content="Длина(с)" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,0,0,0" />
+                <Label Content="Длительность(с)" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,0,0,0" />
                 <TextBox x:Name="len_textBox" TextWrapping="Wrap" VerticalAlignment="Top" Text="5" Margin="10,10,0,0"
      Height="20" Width="50"/>
                 <Label Content="Частота(Гц)" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,0,0,0" />
