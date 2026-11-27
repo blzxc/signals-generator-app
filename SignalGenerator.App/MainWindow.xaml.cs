@@ -35,12 +35,16 @@ namespace SignalGenerator.App
         private readonly ThresholdAnalyzer _analyzer = new ThresholdAnalyzer();
         private SignalMarkerRenderer _markerRenderer;
         private SignalAnalysisResult _analysisResult;
+        private readonly CrossingCounter _crossingCounter = new CrossingCounter();
+        private readonly PeriodEstimator _periodEstimator = new PeriodEstimator();
         public MainWindow()
         {
             InitializeComponent();
             _markerRenderer = new SignalMarkerRenderer(WpfPlot1.Plot);
             _analyzer.MarkerDetected += ShowMarker;
             _analyzer.MarkerDetected += AppendMarkerRow;
+            _analyzer.MarkerDetected += _crossingCounter.OnMarkerDetected;
+            _analyzer.MarkerDetected += _periodEstimator.OnMarkerDetected;
             SignalTypeComboBox.ItemsSource = Enum.GetValues(typeof(SignalType));
             SignalTypeComboBox.SelectedIndex = 0;
         }
@@ -70,6 +74,10 @@ namespace SignalGenerator.App
             MarkerListBox.Items.Clear();
             SummaryTextBlock.Text = "";
             _analysisResult = null;
+            _crossingCounter.Reset();
+            _periodEstimator.Reset();
+            CounterTextBlock.Text = "";
+            PeriodTextBlock.Text = "";
         }
         private void Button_Click_FindCrossings(object sender, RoutedEventArgs e)
         {
@@ -92,6 +100,15 @@ namespace SignalGenerator.App
                 _analysisResult = _analyzer.Analyze(signal, threshold);
                 SummaryTextBlock.Text =
                     $"Найдено пересечений: {_analysisResult.Markers.Count}";
+                CounterTextBlock.Text = "Вверх: " + _crossingCounter.UpCount + ", вниз: " + _crossingCounter.DownCount;
+                if (float.IsNaN(_periodEstimator.Period))
+                {
+                    PeriodTextBlock.Text = "Период: не определен";
+                }
+                else
+                {
+                    PeriodTextBlock.Text = "Период: " + _periodEstimator.Period.ToString("F3") + " с";
+                }
             }
             catch (ArgumentException ex)
             {

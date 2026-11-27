@@ -39,6 +39,8 @@
                     Click="Button_Click_ClearMarkers"/>
             </StackPanel>
             <TextBlock x:Name="SummaryTextBlock" Margin="10,0,0,0"/>
+            <TextBlock x:Name="CounterTextBlock" Margin="10,0,0,0"/>
+            <TextBlock x:Name="PeriodTextBlock" Margin="10,0,0,0"/>
             <ListBox x:Name="MarkerListBox" Height="150" Margin="10,5,10,10"/>
         </StackPanel>
         <DockPanel Grid.Column="1" Grid.RowSpan="2" LastChildFill="False">
