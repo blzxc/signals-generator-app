@@ -73,8 +73,15 @@ namespace SignalGenerator.App
             float phase = (float.Parse(phase_textBox.Text, CultureInfo.InvariantCulture));
             float scale = (float.Parse(scale_textBox.Text, CultureInfo.InvariantCulture));
 
-            addSignal(Tools.Sin(len, freq, period, phase, scale));
-            
+            try
+            {
+                addSignal(Tools.Sin(len, freq, period, phase, scale));
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
 
         }
         private void Button_Click_Line(object sender, RoutedEventArgs e)
@@ -83,7 +90,14 @@ namespace SignalGenerator.App
             float b = (float.Parse(b_textBox.Text, CultureInfo.InvariantCulture));
             float len = (float.Parse(len_textBox.Text, CultureInfo.InvariantCulture));
             float freq = (float.Parse(freq_textBox.Text, CultureInfo.InvariantCulture));
-            addSignal(Tools.Line(len,freq,k, b));
+            try
+            {
+                addSignal(Tools.Line(len,freq,k, b));
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
 
         }
@@ -118,7 +132,14 @@ namespace SignalGenerator.App
             if (myDialog.ShowDialog() == true)
             {
                 string filePath = myDialog.FileName;
-                addSignal(SingleChannelSignalReader.Read(filePath));
+                try
+                {
+                    addSignal(SingleChannelSignalReader.Read(filePath));
+                }
+                catch (InvalidDataException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
                 
             }
             
@@ -129,7 +150,14 @@ namespace SignalGenerator.App
             float amplitude = (float.Parse(Amplitude_textBox.Text, CultureInfo.InvariantCulture));
             float len = (float.Parse(len_textBox.Text, CultureInfo.InvariantCulture));
             float freq = (float.Parse(freq_textBox.Text, CultureInfo.InvariantCulture));
-            addSignal(Tools.Noise(len, freq, amplitude));
+            try
+            {
+                addSignal(Tools.Noise(len, freq, amplitude));
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         private void Button_Click_Remove(object sender, RoutedEventArgs e)
         {
@@ -183,9 +211,16 @@ namespace SignalGenerator.App
             {
                 intWindowSize++;
             }
-            float[] result = OfflineFilter.Filter(signalList.Last().Data, intWindowSize);
-            SingleChannelSignal newData = new SingleChannelSignal(result, signalList.Last().Frequency);
-            addSignal(newData);
+            try
+            {
+                float[] result = OfflineFilter.Filter(signalList.Last().Data, intWindowSize);
+                SingleChannelSignal newData = new SingleChannelSignal(result, signalList.Last().Frequency);
+                addSignal(newData);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Button_Click_Online(object sender, RoutedEventArgs e)
@@ -199,18 +234,25 @@ namespace SignalGenerator.App
             int intWindowSize = (int)(window_size * signalList.Last().Frequency+ 0.5);
             float[] data = signalList.Last().Data;
             int chunkSize = 7;
-            OnlineFilter filter = new OnlineFilter(intWindowSize);
-            List<float> result = new List<float>();
-
-            // Подаём сигнал на фильтр фрагментами фиксированного размера
-            for (int i = 0; i < data.Length; i += chunkSize)
+            try
             {
-                float[] chunk = data.Skip(i).Take(chunkSize).ToArray();
-                result.AddRange(filter.Filter(chunk));
-            }
+                OnlineFilter filter = new OnlineFilter(intWindowSize);
+                List<float> result = new List<float>();
 
-            SingleChannelSignal newData = new SingleChannelSignal(result.ToArray(), signalList.Last().Frequency);
-            addSignal(newData);
+                // Подаём сигнал на фильтр фрагментами фиксированного размера
+                for (int i = 0; i < data.Length; i += chunkSize)
+                {
+                    float[] chunk = data.Skip(i).Take(chunkSize).ToArray();
+                    result.AddRange(filter.Filter(chunk));
+                }
+
+                SingleChannelSignal newData = new SingleChannelSignal(result.ToArray(), signalList.Last().Frequency);
+                addSignal(newData);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         private void Button_Click_Analyze(object sender, RoutedEventArgs e)
         {
