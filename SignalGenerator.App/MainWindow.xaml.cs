@@ -41,7 +41,7 @@ namespace SignalGenerator.App
         {
 
             signalList.Add(obj);
-            WpfPlot1.Plot.Add.ScatterLine(obj.TimeTick, obj.Value);
+            WpfPlot1.Plot.Add.ScatterLine(obj.TimeTick, obj.Data);
             WpfPlot1.Plot.Axes.AutoScale();
             WpfPlot1.Refresh();
         }
@@ -118,7 +118,7 @@ namespace SignalGenerator.App
             if (myDialog.ShowDialog() == true)
             {
                 string filePath = myDialog.FileName;
-                addSignal(SingleChannelSignalReader.Load(filePath));
+                addSignal(SingleChannelSignalReader.Read(filePath));
                 
             }
             
@@ -182,13 +182,13 @@ namespace SignalGenerator.App
                 return;
             }
             float window_size = (float.Parse(Window_textBox.Text, CultureInfo.InvariantCulture));
-            int intWindowSize = (int)(window_size * signalList.Last().Freq + 0.5);
+            int intWindowSize = (int)(window_size * signalList.Last().Frequency+ 0.5);
             if (intWindowSize % 2 == 0)
             {
                 intWindowSize++;
             }
-            float[] result = OfflineFilter.Filter(signalList.Last().Value, intWindowSize);
-            SingleChannelSignal newData = new SingleChannelSignal(signalList.Last().Freq, result);
+            float[] result = OfflineFilter.Filter(signalList.Last().Data, intWindowSize);
+            SingleChannelSignal newData = new SingleChannelSignal(result, signalList.Last().Frequency);
             addSignal(newData);
         }
 
@@ -200,8 +200,8 @@ namespace SignalGenerator.App
                 return;
             }
             float window_size = (float.Parse(Window_textBox.Text, CultureInfo.InvariantCulture));
-            int intWindowSize = (int)(window_size * signalList.Last().Freq + 0.5);
-            float[] data = signalList.Last().Value;
+            int intWindowSize = (int)(window_size * signalList.Last().Frequency+ 0.5);
+            float[] data = signalList.Last().Data;
             int chunkSize = 7;
             OnlineFilter filter = new OnlineFilter(intWindowSize);
             List<float> result = new List<float>();
@@ -213,7 +213,7 @@ namespace SignalGenerator.App
                 result.AddRange(filter.Filter(chunk));
             }
 
-            SingleChannelSignal newData = new SingleChannelSignal(signalList.Last().Freq, result.ToArray());
+            SingleChannelSignal newData = new SingleChannelSignal(result.ToArray(), signalList.Last().Frequency);
             addSignal(newData);
         }
         private void Button_Click_Analyze(object sender, RoutedEventArgs e)
@@ -227,15 +227,15 @@ namespace SignalGenerator.App
             float max = (float.Parse(max_textBox.Text, CultureInfo.InvariantCulture));
             float duration = (float.Parse(duration_textBox.Text, CultureInfo.InvariantCulture));
             SingleChannelSignal sig = signalList.Last();
-            int minLength = (int)(duration * sig.Freq + 0.5);
+            int minLength = (int)(duration * sig.Frequency+ 0.5);
 
             clearMarkers();
             markup.Clear();
-            markupFreq = sig.Freq;
+            markupFreq = sig.Frequency;
 
             SingleChannelRangeAnalyzer analyzer = new SingleChannelRangeAnalyzer(min, max, minLength);
             analyzer.OutOfRange += Analyzer_OutOfRange;
-            analyzer.Analyze(sig.Value);
+            analyzer.Analyze(sig.Data);
             WpfPlot1.Refresh();
         }
         private void Analyzer_OutOfRange(object sender, OutOfRangeEventArgs e)
