@@ -35,7 +35,8 @@ namespace SignalGenerator.App
         public MainWindow()
         {
             InitializeComponent();
-            
+            SignalTypeComboBox.ItemsSource = Enum.GetValues(typeof(SignalType));
+            SignalTypeComboBox.SelectedIndex = 0;
         }
         private void addSignal(SingleChannelSignal obj)
         {
@@ -65,41 +66,89 @@ namespace SignalGenerator.App
         }
 
 
-        private void Button_Click_Sin(object sender, RoutedEventArgs e)
+        private void SignalTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            float len = (float.Parse(len_textBox.Text, CultureInfo.InvariantCulture));
-            float freq = (float.Parse(freq_textBox.Text, CultureInfo.InvariantCulture));
-            float period = (float.Parse(period_textBox.Text, CultureInfo.InvariantCulture));
-            float phase = (float.Parse(phase_textBox.Text, CultureInfo.InvariantCulture));
-            float scale = (float.Parse(scale_textBox.Text, CultureInfo.InvariantCulture));
-
-            try
+            SignalType type = (SignalType)SignalTypeComboBox.SelectedItem;
+            SinePanel.Visibility = Visibility.Collapsed;
+            LinePanel.Visibility = Visibility.Collapsed;
+            NoisePanel.Visibility = Visibility.Collapsed;
+            switch (type)
             {
-                addSignal(Tools.Sin(len, freq, period, phase, scale));
+                case SignalType.Sine:
+                    SinePanel.Visibility = Visibility.Visible;
+                    break;
+                case SignalType.Line:
+                    LinePanel.Visibility = Visibility.Visible;
+                    break;
+                case SignalType.Noise:
+                    NoisePanel.Visibility = Visibility.Visible;
+                    break;
             }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-
         }
-        private void Button_Click_Line(object sender, RoutedEventArgs e)
+        private GeneratorParameters ReadParameters(SignalType type)
         {
-            float k = (float.Parse(k_textBox.Text, CultureInfo.InvariantCulture));
-            float b = (float.Parse(b_textBox.Text, CultureInfo.InvariantCulture));
-            float len = (float.Parse(len_textBox.Text, CultureInfo.InvariantCulture));
-            float freq = (float.Parse(freq_textBox.Text, CultureInfo.InvariantCulture));
+            switch (type)
+            {
+                case SignalType.Sine:
+                    float period;
+                    float phase;
+                    float amplitude;
+                    if (!float.TryParse(period_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out period)
+                        || !float.TryParse(phase_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out phase)
+                        || !float.TryParse(scale_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out amplitude))
+                    {
+                        MessageBox.Show("Некорректные параметры синусоиды");
+                        return null;
+                    }
+                    return new SineParameters { Period = period, Phase = phase, Amplitude = amplitude };
+                case SignalType.Line:
+                    float k;
+                    float b;
+                    if (!float.TryParse(k_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out k)
+                        || !float.TryParse(b_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out b))
+                    {
+                        MessageBox.Show("Некорректные параметры прямой");
+                        return null;
+                    }
+                    return new LineParameters { K = k, B = b };
+                case SignalType.Noise:
+                    float range;
+                    if (!float.TryParse(Amplitude_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out range))
+                    {
+                        MessageBox.Show("Некорректный размах шума");
+                        return null;
+                    }
+                    return new NoiseParameters { Range = range };
+                default:
+                    return null;
+            }
+        }
+        private void Button_Click_Generate(object sender, RoutedEventArgs e)
+        {
+            float duration;
+            float samplingRate;
+            if (!float.TryParse(len_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out duration)
+                || !float.TryParse(freq_textBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out samplingRate))
+            {
+                MessageBox.Show("Некорректная длина или частота");
+                return;
+            }
+            SignalType selectedType = (SignalType)SignalTypeComboBox.SelectedItem;
+            GeneratorParameters parameters = ReadParameters(selectedType);
+            if (parameters == null)
+            {
+                return;
+            }
             try
             {
-                addSignal(Tools.Line(len,freq,k, b));
+                ISignalGenerator generator = SignalGeneratorFactory.Create(parameters);
+                SingleChannelSignal signal = generator.Generate(new SamplingParameters(samplingRate, duration));
+                addSignal(signal);
             }
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
-
         }
         private void Button_Clear(object sender, RoutedEventArgs e)
         {
@@ -144,20 +193,6 @@ namespace SignalGenerator.App
             }
             
 
-        }
-        private void Button_Click_Noise(object sender, RoutedEventArgs e)
-        {
-            float amplitude = (float.Parse(Amplitude_textBox.Text, CultureInfo.InvariantCulture));
-            float len = (float.Parse(len_textBox.Text, CultureInfo.InvariantCulture));
-            float freq = (float.Parse(freq_textBox.Text, CultureInfo.InvariantCulture));
-            try
-            {
-                addSignal(Tools.Noise(len, freq, amplitude));
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
         private void Button_Click_Remove(object sender, RoutedEventArgs e)
         {
